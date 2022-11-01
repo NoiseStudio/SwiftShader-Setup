@@ -24,18 +24,21 @@ jobs:
         run: dotnet publish SwiftShader-Setup/SwiftShader-Setup.csproj -p:PublishDir=../release --no-restore --configuration Release
 
       - name: Make SwiftShader-Setup directory
+        working-directory: release
         run: |
           mkdir SwiftShader-Setup
-          mv release/SwiftShader-Setup.dll SwiftShader-Setup/SwiftShader-Setup.dll
-          mv release/SwiftShader-Setup.runtimeconfig.json SwiftShader-Setup/SwiftShader-Setup.runtimeconfig.json
+          mv SwiftShader-Setup.dll SwiftShader-Setup/SwiftShader-Setup.dll
+          mv SwiftShader-Setup.runtimeconfig.json SwiftShader-Setup/SwiftShader-Setup.runtimeconfig.json
 
       - name: Install zip
         run: sudo apt install zip
 
       - name: Archive zip
-        run: zip SwiftShader-Setup.zip SwiftShader-Setup/
+        working-directory: release
+        run: zip ../SwiftShader-Setup.zip SwiftShader-Setup/
       - name: Archive tar.gz
-        run: tar -czvf SwiftShader-Setup.tar.gz SwiftShader-Setup
+        working-directory: release
+        run: tar -czvf ../SwiftShader-Setup.tar.gz SwiftShader-Setup
 
       - name: Upload artifacts to release
         uses: softprops/action-gh-release@v1
