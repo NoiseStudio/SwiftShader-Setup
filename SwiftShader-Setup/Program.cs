@@ -5,7 +5,6 @@ if (
     (OperatingSystem.IsWindows() && !WindowsSetup.HasPrivileges()) ||
     (OperatingSystem.IsLinux() && !LinuxSetup.HasPrivileges())
 ) {
-    Console.WriteLine(OperatingSystem.IsLinux());
     Console.WriteLine("Application must be runned with administrator privileges.");
     Environment.Exit(-1);
 }

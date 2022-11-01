@@ -1,0 +1,48 @@
+name: build
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '7.x.x'
+          include-prerelease: true
+
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet publish SwiftShader-Setup/SwiftShader-Setup.csproj -p:PublishDir=../release --no-restore --configuration Release
+
+      - name: Make final directory
+        run: |
+          mkdir final
+          mv release/SwiftShader-Setup.dll final/SwiftShader-Setup.dll
+          mv release/SwiftShader-Setup.runtimeconfig.json final/SwiftShader-Setup.runtimeconfig.json
+
+      - name: Install zip
+        run: sudo apt install zip
+
+      - name: Archive zip
+        run: |
+          cd final
+          zip -r ../SwiftShader-Setup.zip *
+          cd ..
+      - name: Archive tar.gz
+        run: tar -czvf SwiftShader-Setup.tar.gz final
+
+      - name: Upload artifacts to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            SwiftShader-Setup.zip
+            SwiftShader-Setup.tar.gz
