@@ -16,28 +16,29 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '7.x.x'
-          include-prerelease: true
 
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
         run: dotnet publish SwiftShader-Setup/SwiftShader-Setup.csproj -p:PublishDir=../release --no-restore --configuration Release
 
+      - name: Make artifacts directory
+        run: mkdir artifacts
       - name: Make SwiftShader-Setup directory
-        working-directory: release
+        working-directory: artifacts
         run: |
           mkdir SwiftShader-Setup
-          mv SwiftShader-Setup.dll SwiftShader-Setup/SwiftShader-Setup.dll
-          mv SwiftShader-Setup.runtimeconfig.json SwiftShader-Setup/SwiftShader-Setup.runtimeconfig.json
+          mv ../release/SwiftShader-Setup.dll SwiftShader-Setup/SwiftShader-Setup.dll
+          mv ../release/SwiftShader-Setup.runtimeconfig.json SwiftShader-Setup/SwiftShader-Setup.runtimeconfig.json
 
       - name: Install zip
         run: sudo apt install zip
 
       - name: Archive zip
-        working-directory: release
+        working-directory: artifacts
         run: zip ../SwiftShader-Setup.zip SwiftShader-Setup/
       - name: Archive tar.gz
-        working-directory: release
+        working-directory: artifacts
         run: tar -czvf ../SwiftShader-Setup.tar.gz SwiftShader-Setup
 
       - name: Upload artifacts to release
